@@ -14,7 +14,6 @@ class Deck {
             ...this.instantiateCards(Wasabi, 6),
             ...this.instantiateCards(Chopsticks, 4),
         ])
-        console.log(this.cards)
     }
 
     pop(numberOfCards) {

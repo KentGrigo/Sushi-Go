@@ -1,5 +1,4 @@
 function loadGame() {
-    document.getElementById("form").submit()
     const numberOfPlayers = document.getElementById("numberOfPlayers").valueAsNumber
     const isValidNumberOfPlayers = Number.isInteger(numberOfPlayers) && 2 <= numberOfPlayers && numberOfPlayers <= 5
     if (!isValidNumberOfPlayers) {
@@ -22,10 +21,13 @@ function loadGame() {
         players.push(player)
     }
 
+    const messages = document.getElementById("messages")
     for (var cardNumber = 0; cardNumber < numberOfStartingCards; cardNumber++) {
         for (var playerNumber = 0; playerNumber < numberOfPlayers; playerNumber++) {
             const player = players[playerNumber]
-            player.playCard(0)
+            const playedCard = player.playCard(0)
+            const message = `Player #${playerNumber} played ${playedCard.name}<br>`
+            messages.innerHTML += message
         }
 
         const tmp = players[0].cards
