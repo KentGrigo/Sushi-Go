@@ -21,6 +21,13 @@ function loadGame() {
         const player = new Player(playerCards)
         players.push(player)
     }
-    console.log(players)
 
+    for (var cardNumber = 0; cardNumber < numberOfStartingCards; cardNumber++) {
+        for (var playerNumber = 0; playerNumber < numberOfPlayers; playerNumber++) {
+            const player = players[playerNumber]
+            player.playCard(0)
+        }
+    }
+
+    console.log(players)
 }
