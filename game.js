@@ -1,7 +1,8 @@
 function loadGame() {
     document.getElementById("form").submit()
     const numberOfPlayers = document.getElementById("numberOfPlayers").valueAsNumber
-    if (!Number.isInteger(numberOfPlayers) || numberOfPlayers < 2 || 5 < numberOfPlayers) {
+    const isValidNumberOfPlayers = Number.isInteger(numberOfPlayers) && 2 <= numberOfPlayers && numberOfPlayers <= 5
+    if (!isValidNumberOfPlayers) {
         console.error("The number of players must be between 2 and 5, inclusive.")
         return
     }
