@@ -36,6 +36,4 @@ function loadGame() {
         }
         players[numberOfPlayers - 1].cards = tmp
     }
-
-    console.log(players)
 }
