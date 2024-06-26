@@ -6,7 +6,13 @@
         <script src="player.js"></script>
         <script src="game.js"></script>
     </head>
+
     <body>
         <h1>Sushi Go!</h1>
+
+        <form id="form">
+            Number of players: <input type="number" min="2" max="5" id="numberOfPlayers">
+            <input type="button" onclick="loadGame()" value="Submit">
+        </form>
     </body>
 </html>
