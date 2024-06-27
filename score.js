@@ -22,6 +22,18 @@ class Score {
         score["score"] += extraScore
     }
 
+    calculateDumplingScore(score) {
+        const numberOfDumplings = score["numberOfDumplings"]
+        let modifier = 0
+        let extraScore = 0
+        for (var dumplingNumber = 0; dumplingNumber < numberOfDumplings; dumplingNumber++) {
+            modifier += 1
+            extraScore += modifier
+        }
+        score["score"] += extraScore
+        score["numberOfDumplings"] = 0
+    }
+
     calculateScore() {
         const playerIdToScore = {}
         this.players.forEach(player => {
@@ -55,6 +67,17 @@ class Score {
                     default: console.error(`Unsupported card: ${playedCard}`)
                 }
             })
+
+            const numberOfTempuraPairs = Math.floor(score["numberOfTempura"] / 2)
+            score["score"] += 5 * numberOfTempuraPairs
+            score["numberOfTempura"] = 0
+
+            const numberOfSashimiSets = Math.floor(score["numberOfSashimi"] / 3)
+            score["score"] += 10 * numberOfSashimiSets
+            score["numberOfSashimi"] = 0
+
+            this.calculateDumplingScore(score)
+
             console.log(score)
             console.log()
         })
