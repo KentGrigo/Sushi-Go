@@ -36,4 +36,6 @@ function loadGame() {
         }
         players[numberOfPlayers - 1].cards = tmp
     }
+
+    const score = new Score(players).calculateScore()
 }

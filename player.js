@@ -1,5 +1,6 @@
 class Player {
     constructor(cards) {
+        this.id = crypto.randomUUID()
         this.cards = cards
         this.playedCards = []
     }
