@@ -34,6 +34,52 @@ class Score {
         score["numberOfDumplings"] = 0
     }
 
+    calculateMakiRollScore(playerIdToScore) {
+        const playerIdsAndMakiRolls =
+            Object.keys(playerIdToScore)
+                .map((playerId) => {
+                    const score = playerIdToScore[playerId]
+                    const numberOfMakiRolls = score["numberOfMakiRolls"]
+                    return { "playerId": playerId, "numberOfMakiRolls": numberOfMakiRolls }
+                })
+                .sort(function (a, b) {
+                    return a["numberOfMakiRolls"] < b["numberOfMakiRolls"] ? 1
+                         : a["numberOfMakiRolls"] > b["numberOfMakiRolls"] ? -1
+                         : 0
+                })
+
+        const mostMakiRolls = playerIdsAndMakiRolls[0]["numberOfMakiRolls"]
+        if (mostMakiRolls === 0) return
+        const playersIdsWithMostMakiRolls = playerIdsAndMakiRolls.filter(entry => mostMakiRolls === entry["numberOfMakiRolls"])
+
+        const maxScore = 6
+        const splitMaxScore = Math.floor(maxScore / playersIdsWithMostMakiRolls.length)
+        playersIdsWithMostMakiRolls.forEach(entry => {
+            const playerId = entry["playerId"]
+            const score = playerIdToScore[playerId]
+            score["score"] = splitMaxScore
+        })
+
+        // Might also be most, but in that case, we'll skip
+        const secondMostMakiRolls = playerIdsAndMakiRolls[1]["numberOfMakiRolls"]
+        if (secondMostMakiRolls === 0 || secondMostMakiRolls === mostMakiRolls) return
+        const playersIdsWithSecondMostMakiRolls = playerIdsAndMakiRolls.filter(entry => secondMostMakiRolls === entry["numberOfMakiRolls"])
+
+        const secondMaxScore = 3
+        const splitSecondMaxScore = Math.floor(secondMaxScore / playersIdsWithSecondMostMakiRolls.length)
+        playersIdsWithSecondMostMakiRolls.forEach(entry => {
+            const playerId = entry["playerId"]
+            const score = playerIdToScore[playerId]
+            score["score"] = splitSecondMaxScore
+        })
+
+        // TODO: `numberOfMakiRolls` is not reset if one of the above returns are evaluated
+        Object.keys(playerIdToScore).forEach(playerId => {
+            const score = playerIdToScore[playerId]
+            score["numberOfMakiRolls"] = 0
+        })
+    }
+
     calculateScore() {
         const playerIdToScore = {}
         this.players.forEach(player => {
@@ -77,10 +123,12 @@ class Score {
             score["numberOfSashimi"] = 0
 
             this.calculateDumplingScore(score)
-
-            console.log(score)
-            console.log()
         })
+
+        this.calculateMakiRollScore(playerIdToScore)
+
+        console.log(playerIdToScore)
+
         return playerIdToScore
     }
 }
