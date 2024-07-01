@@ -96,7 +96,6 @@ class Score {
         this.players.forEach(player => {
             const score = playerIdToScore[player.id]
             player.playedCards.forEach(playedCard => {
-                console.log(playedCard.name)
                 switch (playedCard.constructor) {
                     case MakiRoll1: score["numberOfMakiRolls"] += 1; break
                     case MakiRoll2: score["numberOfMakiRolls"] += 2; break
@@ -126,8 +125,6 @@ class Score {
         })
 
         this.calculateMakiRollScore(playerIdToScore)
-
-        console.log(playerIdToScore)
 
         return playerIdToScore
     }

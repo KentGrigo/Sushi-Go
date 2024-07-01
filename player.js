@@ -1,6 +1,7 @@
 class Player {
-    constructor(cards) {
+    constructor(name, cards) {
         this.id = crypto.randomUUID()
+        this.name = name
         this.cards = cards
         this.playedCards = []
     }

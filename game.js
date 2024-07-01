@@ -17,7 +17,7 @@ function loadGame() {
     const players = []
     for (var playerNumber = 0; playerNumber < numberOfPlayers; playerNumber++) {
         const playerCards = deck.pop(numberOfStartingCards)
-        const player = new Player(playerCards)
+        const player = new Player(`Player #${playerNumber + 1}`, playerCards)
         players.push(player)
     }
 
@@ -26,9 +26,10 @@ function loadGame() {
         for (var playerNumber = 0; playerNumber < numberOfPlayers; playerNumber++) {
             const player = players[playerNumber]
             const playedCard = player.playCard(0)
-            const message = `Player #${playerNumber} played ${playedCard.name}<br>`
+            const message = `${player.name} played ${playedCard.name}<br>`
             messages.innerHTML += message
         }
+        messages.innerHTML += "<br>"
 
         const tmp = players[0].cards
         for (var playerNumber = 0; playerNumber < numberOfPlayers - 1; playerNumber++) {
@@ -38,4 +39,9 @@ function loadGame() {
     }
 
     const score = new Score(players).calculateScore()
+    players.forEach(player => {
+        const playerScore = score[player.id]
+        messages.innerHTML += `${player.name}: ${playerScore["score"]}<br>`
+    })
+    messages.innerHTML += "<br>"
 }
