@@ -113,6 +113,8 @@ class Score {
                 }
             })
 
+            score["numberOfUnusedWasabi"] = 0
+
             const numberOfTempuraPairs = Math.floor(score["numberOfTempura"] / 2)
             score["score"] += 5 * numberOfTempuraPairs
             score["numberOfTempura"] = 0
