@@ -21,17 +21,26 @@ function loadGame() {
 
     const messages = document.getElementById('messages')
     const deck = new Deck()
+    const score = new Score(players)
+
     const numberOfRounds = 3
     for (var roundNumber = 0; roundNumber < numberOfRounds; roundNumber++) {
         writeMessage(messages, `Round number ${roundNumber + 1}`)
         writeMessage(messages, '')
-        startRound(deck, players, numberOfStartingCards, messages)
+
+        playRound(deck, players, numberOfStartingCards, messages)
+        score.calculateRoundScore()
+
+        writeScore(messages, players, score)
         writeMessage(messages, '-------')
         writeMessage(messages, '')
     }
+
+    score.calculateGameScore()
+    writeScore(messages, players, score)
 }
 
-function startRound(deck, players, numberOfStartingCards, messages) {
+function playRound(deck, players, numberOfStartingCards, messages) {
     players.forEach(player => {
         const playerCards = deck.pop(numberOfStartingCards)
         player.newCards(playerCards)
@@ -46,13 +55,6 @@ function startRound(deck, players, numberOfStartingCards, messages) {
 
         swapPlayerCards(players)
     }
-
-    const score = new Score(players).calculateScore()
-    players.forEach(player => {
-        const playerScore = score[player.id]
-        writeMessage(messages, `${player.name}: ${playerScore["score"]}`)
-    })
-    writeMessage(messages, '')
 }
 
 function swapPlayerCards(players) {
@@ -65,4 +67,12 @@ function swapPlayerCards(players) {
 
 function writeMessage(messages, message) {
     messages.innerHTML += `${message}<br>`
+}
+
+function writeScore(messages, players, score) {
+    players.forEach(player => {
+        const playerScore = score.playerIdToScore[player.id]
+        writeMessage(messages, `${player.name}: ${playerScore['score']}`)
+    })
+    writeMessage(messages, '')
 }

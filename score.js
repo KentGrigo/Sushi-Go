@@ -1,6 +1,18 @@
 class Score {
     constructor(players) {
         this.players = players
+        this.playerIdToScore = {}
+        this.players.forEach(player => {
+            this.playerIdToScore[player.id] = {
+                score: 0,
+                numberOfMakiRolls: 0,
+                numberOfTempura: 0,
+                numberOfSashimi: 0,
+                numberOfDumplings: 0,
+                numberOfUnusedWasabi: 0,
+                numberOfPudding: 0,
+            }
+        })
     }
 
     getNigiriBaseScore(playedCard) {
@@ -34,12 +46,12 @@ class Score {
         score["numberOfDumplings"] = 0
     }
 
-    calculateMakiRollScore(playerIdToScore) {
+    calculateMakiRollScore() {
         const playerIdsAndMakiRolls =
-            Object.keys(playerIdToScore)
+            Object.keys(this.playerIdToScore)
                 .map((playerId) => {
-                    const score = playerIdToScore[playerId]
-                    const numberOfMakiRolls = score["numberOfMakiRolls"]
+                    const playerScore = this.playerIdToScore[playerId]
+                    const numberOfMakiRolls = playerScore["numberOfMakiRolls"]
                     return { "playerId": playerId, "numberOfMakiRolls": numberOfMakiRolls }
                 })
                 .sort(function (a, b) {
@@ -56,8 +68,8 @@ class Score {
         const splitMaxScore = Math.floor(maxScore / playersIdsWithMostMakiRolls.length)
         playersIdsWithMostMakiRolls.forEach(entry => {
             const playerId = entry["playerId"]
-            const score = playerIdToScore[playerId]
-            score["score"] = splitMaxScore
+            const playerScore = this.playerIdToScore[playerId]
+            playerScore["score"] = splitMaxScore
         })
 
         // Might also be most, but in that case, we'll skip
@@ -69,65 +81,56 @@ class Score {
         const splitSecondMaxScore = Math.floor(secondMaxScore / playersIdsWithSecondMostMakiRolls.length)
         playersIdsWithSecondMostMakiRolls.forEach(entry => {
             const playerId = entry["playerId"]
-            const score = playerIdToScore[playerId]
-            score["score"] = splitSecondMaxScore
+            const playerScore = this.playerIdToScore[playerId]
+            playerScore["score"] = splitSecondMaxScore
         })
 
         // TODO: `numberOfMakiRolls` is not reset if one of the above returns are evaluated
-        Object.keys(playerIdToScore).forEach(playerId => {
-            const score = playerIdToScore[playerId]
-            score["numberOfMakiRolls"] = 0
+        Object.keys(this.playerIdToScore).forEach(playerId => {
+            const playerScore = this.playerIdToScore[playerId]
+            playerScore["numberOfMakiRolls"] = 0
         })
     }
 
-    calculateScore() {
-        const playerIdToScore = {}
+    calculateRoundScore() {
         this.players.forEach(player => {
-            playerIdToScore[player.id] = {
-                score: 0,
-                numberOfMakiRolls: 0,
-                numberOfTempura: 0,
-                numberOfSashimi: 0,
-                numberOfDumplings: 0,
-                numberOfUnusedWasabi: 0,
-                numberOfPudding: 0,
-            }
-        })
-        this.players.forEach(player => {
-            const score = playerIdToScore[player.id]
+            const playerScore = this.playerIdToScore[player.id]
             player.playedCards.forEach(playedCard => {
                 switch (playedCard.constructor) {
-                    case MakiRoll1: score["numberOfMakiRolls"] += 1; break
-                    case MakiRoll2: score["numberOfMakiRolls"] += 2; break
-                    case MakiRoll3: score["numberOfMakiRolls"] += 3; break
-                    case Tempura: score["numberOfTempura"] += 1; break
-                    case Sashimi: score["numberOfSashimi"] += 1; break
-                    case Dumpling: score["numberOfDumplings"] += 1; break
-                    case Wasabi: score["numberOfUnusedWasabi"] += 1; break
-                    case Pudding: score["numberOfPudding"] += 1; break
+                    case MakiRoll1: playerScore["numberOfMakiRolls"] += 1; break
+                    case MakiRoll2: playerScore["numberOfMakiRolls"] += 2; break
+                    case MakiRoll3: playerScore["numberOfMakiRolls"] += 3; break
+                    case Tempura: playerScore["numberOfTempura"] += 1; break
+                    case Sashimi: playerScore["numberOfSashimi"] += 1; break
+                    case Dumpling: playerScore["numberOfDumplings"] += 1; break
+                    case Wasabi: playerScore["numberOfUnusedWasabi"] += 1; break
+                    case Pudding: playerScore["numberOfPudding"] += 1; break
                     case Chopsticks: break;
                     case SquidNigiri:
                     case SalmonNigiri:
-                    case EggNigiri: this.calculateNigiriScore(playedCard, score); break
+                    case EggNigiri: this.calculateNigiriScore(playedCard, playerScore); break
                     default: console.error(`Unsupported card: ${playedCard}`)
                 }
             })
 
-            score["numberOfUnusedWasabi"] = 0
+            playerScore["numberOfUnusedWasabi"] = 0
 
-            const numberOfTempuraPairs = Math.floor(score["numberOfTempura"] / 2)
-            score["score"] += 5 * numberOfTempuraPairs
-            score["numberOfTempura"] = 0
+            const numberOfTempuraPairs = Math.floor(playerScore["numberOfTempura"] / 2)
+            playerScore["score"] += 5 * numberOfTempuraPairs
+            playerScore["numberOfTempura"] = 0
 
-            const numberOfSashimiSets = Math.floor(score["numberOfSashimi"] / 3)
-            score["score"] += 10 * numberOfSashimiSets
-            score["numberOfSashimi"] = 0
+            const numberOfSashimiSets = Math.floor(playerScore["numberOfSashimi"] / 3)
+            playerScore["score"] += 10 * numberOfSashimiSets
+            playerScore["numberOfSashimi"] = 0
 
-            this.calculateDumplingScore(score)
+            this.calculateDumplingScore(playerScore)
         })
 
-        this.calculateMakiRollScore(playerIdToScore)
+        this.calculateMakiRollScore()
 
-        return playerIdToScore
+        return this.playerIdToScore
+    }
+
+    calculateGameScore() {
     }
 }
