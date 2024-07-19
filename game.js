@@ -13,29 +13,39 @@ function loadGame() {
         5: 7,
     }[numberOfPlayers]
 
-    const deck = new Deck()
     const players = []
     for (var playerNumber = 0; playerNumber < numberOfPlayers; playerNumber++) {
-        const playerCards = deck.pop(numberOfStartingCards)
-        const player = new Player(`Player #${playerNumber + 1}`, playerCards)
+        const player = new Player(`Player #${playerNumber + 1}`)
         players.push(player)
     }
 
     const messages = document.getElementById("messages")
+    const deck = new Deck()
+    const numberOfRounds = 3
+    for (var roundNumber = 0; roundNumber < numberOfRounds; roundNumber++) {
+        messages.innerHTML += `Round number ${roundNumber + 1}<br>`
+        messages.innerHTML += "<br>"
+        startRound(deck, players, numberOfStartingCards, messages)
+        messages.innerHTML += "-------<br>"
+        messages.innerHTML += "<br>"
+    }
+}
+
+function startRound(deck, players, numberOfStartingCards, messages) {
+    players.forEach(player => {
+        const playerCards = deck.pop(numberOfStartingCards)
+        player.newCards(playerCards)
+    })
+
     for (var cardNumber = 0; cardNumber < numberOfStartingCards; cardNumber++) {
-        for (var playerNumber = 0; playerNumber < numberOfPlayers; playerNumber++) {
-            const player = players[playerNumber]
+        players.forEach(player => {
             const playedCard = player.playCard(0)
             const message = `${player.name} played ${playedCard.name}<br>`
             messages.innerHTML += message
-        }
+        })
         messages.innerHTML += "<br>"
 
-        const tmp = players[0].cards
-        for (var playerNumber = 0; playerNumber < numberOfPlayers - 1; playerNumber++) {
-            players[playerNumber].cards = players[playerNumber + 1].cards
-        }
-        players[numberOfPlayers - 1].cards = tmp
+        swapPlayerCards(players)
     }
 
     const score = new Score(players).calculateScore()
@@ -44,4 +54,12 @@ function loadGame() {
         messages.innerHTML += `${player.name}: ${playerScore["score"]}<br>`
     })
     messages.innerHTML += "<br>"
+}
+
+function swapPlayerCards(players) {
+    const tmp = players[0].cards
+    for (var playerNumber = 0; playerNumber < players.length - 1; playerNumber++) {
+        players[playerNumber].cards = players[playerNumber + 1].cards
+    }
+    players[players.length - 1].cards = tmp
 }
