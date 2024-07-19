@@ -19,15 +19,15 @@ function loadGame() {
         players.push(player)
     }
 
-    const messages = document.getElementById("messages")
+    const messages = document.getElementById('messages')
     const deck = new Deck()
     const numberOfRounds = 3
     for (var roundNumber = 0; roundNumber < numberOfRounds; roundNumber++) {
-        messages.innerHTML += `Round number ${roundNumber + 1}<br>`
-        messages.innerHTML += "<br>"
+        writeMessage(messages, `Round number ${roundNumber + 1}`)
+        writeMessage(messages, '')
         startRound(deck, players, numberOfStartingCards, messages)
-        messages.innerHTML += "-------<br>"
-        messages.innerHTML += "<br>"
+        writeMessage(messages, '-------')
+        writeMessage(messages, '')
     }
 }
 
@@ -40,10 +40,9 @@ function startRound(deck, players, numberOfStartingCards, messages) {
     for (var cardNumber = 0; cardNumber < numberOfStartingCards; cardNumber++) {
         players.forEach(player => {
             const playedCard = player.playCard(0)
-            const message = `${player.name} played ${playedCard.name}<br>`
-            messages.innerHTML += message
+            writeMessage(messages, `${player.name} played ${playedCard.name}`)
         })
-        messages.innerHTML += "<br>"
+        writeMessage(messages, '')
 
         swapPlayerCards(players)
     }
@@ -51,9 +50,9 @@ function startRound(deck, players, numberOfStartingCards, messages) {
     const score = new Score(players).calculateScore()
     players.forEach(player => {
         const playerScore = score[player.id]
-        messages.innerHTML += `${player.name}: ${playerScore["score"]}<br>`
+        writeMessage(messages, `${player.name}: ${playerScore["score"]}`)
     })
-    messages.innerHTML += "<br>"
+    writeMessage(messages, '')
 }
 
 function swapPlayerCards(players) {
@@ -62,4 +61,8 @@ function swapPlayerCards(players) {
         players[playerNumber].cards = players[playerNumber + 1].cards
     }
     players[players.length - 1].cards = tmp
+}
+
+function writeMessage(messages, message) {
+    messages.innerHTML += `${message}<br>`
 }
