@@ -69,7 +69,7 @@ class Score {
         playersIdsWithMostMakiRolls.forEach(entry => {
             const playerId = entry["playerId"]
             const playerScore = this.playerIdToScore[playerId]
-            playerScore["score"] = splitMaxScore
+            playerScore["score"] += splitMaxScore
         })
 
         // Might also be most, but in that case, we'll skip
@@ -82,7 +82,7 @@ class Score {
         playersIdsWithSecondMostMakiRolls.forEach(entry => {
             const playerId = entry["playerId"]
             const playerScore = this.playerIdToScore[playerId]
-            playerScore["score"] = splitSecondMaxScore
+            playerScore["score"] += splitSecondMaxScore
         })
 
         // TODO: `numberOfMakiRolls` is not reset if one of the above returns are evaluated
