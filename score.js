@@ -24,26 +24,26 @@ class Score {
         }
     }
 
-    calculateNigiriScore(playedCard, score) {
+    calculateNigiriScore(playedCard, playerScore) {
         const baseScore = this.getNigiriBaseScore(playedCard)
         let extraScore = baseScore
-        if (0 < score.numberOfUnusedWasabi) {
-            score["numberOfUnusedWasabi"] -= 1
+        if (0 < playerScore.numberOfUnusedWasabi) {
+            playerScore["numberOfUnusedWasabi"] -= 1
             extraScore *= 3
         }
-        score["score"] += extraScore
+        playerScore["score"] += extraScore
     }
 
-    calculateDumplingScore(score) {
-        const numberOfDumplings = score["numberOfDumplings"]
+    calculateDumplingScore(playerScore) {
+        const numberOfDumplings = playerScore["numberOfDumplings"]
         let modifier = 0
         let extraScore = 0
         for (var dumplingNumber = 0; dumplingNumber < numberOfDumplings; dumplingNumber++) {
             modifier += 1
             extraScore += modifier
         }
-        score["score"] += extraScore
-        score["numberOfDumplings"] = 0
+        playerScore["score"] += extraScore
+        playerScore["numberOfDumplings"] = 0
     }
 
     calculateMakiRollScore() {
