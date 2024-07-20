@@ -62,11 +62,11 @@ class Score {
 
         const mostMakiRolls = playerIdsAndMakiRolls[0]["numberOfMakiRolls"]
         if (mostMakiRolls === 0) return
-        const playersIdsWithMostMakiRolls = playerIdsAndMakiRolls.filter(entry => mostMakiRolls === entry["numberOfMakiRolls"])
+        const playerIdsWithMostMakiRolls = playerIdsAndMakiRolls.filter(entry => mostMakiRolls === entry["numberOfMakiRolls"])
 
         const maxScore = 6
-        const splitMaxScore = Math.floor(maxScore / playersIdsWithMostMakiRolls.length)
-        playersIdsWithMostMakiRolls.forEach(entry => {
+        const splitMaxScore = Math.floor(maxScore / playerIdsWithMostMakiRolls.length)
+        playerIdsWithMostMakiRolls.forEach(entry => {
             const playerId = entry["playerId"]
             const playerScore = this.playerIdToScore[playerId]
             playerScore["score"] += splitMaxScore
@@ -75,11 +75,11 @@ class Score {
         // Might also be most, but in that case, we'll skip
         const secondMostMakiRolls = playerIdsAndMakiRolls[1]["numberOfMakiRolls"]
         if (secondMostMakiRolls === 0 || secondMostMakiRolls === mostMakiRolls) return
-        const playersIdsWithSecondMostMakiRolls = playerIdsAndMakiRolls.filter(entry => secondMostMakiRolls === entry["numberOfMakiRolls"])
+        const playerIdsWithSecondMostMakiRolls = playerIdsAndMakiRolls.filter(entry => secondMostMakiRolls === entry["numberOfMakiRolls"])
 
         const secondMaxScore = 3
-        const splitSecondMaxScore = Math.floor(secondMaxScore / playersIdsWithSecondMostMakiRolls.length)
-        playersIdsWithSecondMostMakiRolls.forEach(entry => {
+        const splitSecondMaxScore = Math.floor(secondMaxScore / playerIdsWithSecondMostMakiRolls.length)
+        playerIdsWithSecondMostMakiRolls.forEach(entry => {
             const playerId = entry["playerId"]
             const playerScore = this.playerIdToScore[playerId]
             playerScore["score"] += splitSecondMaxScore
@@ -89,6 +89,55 @@ class Score {
         Object.keys(this.playerIdToScore).forEach(playerId => {
             const playerScore = this.playerIdToScore[playerId]
             playerScore["numberOfMakiRolls"] = 0
+        })
+    }
+
+    calculatePuddingScore() {
+        const playerIdsAndPuddings =
+            Object.keys(this.playerIdToScore)
+                .map((playerId) => {
+                    const playerScore = this.playerIdToScore[playerId]
+                    const numberOfPuddings = playerScore["numberOfPudding"]
+                    return { "playerId": playerId, "numberOfPudding": numberOfPuddings }
+                })
+                .sort(function (a, b) {
+                    return a["numberOfPudding"] < b["numberOfPudding"] ? 1
+                         : a["numberOfPudding"] > b["numberOfPudding"] ? -1
+                         : 0
+                })
+
+        const doesEveryoneHaveSameScore = playerIdsAndPuddings.every(entry => entry["numberOfPudding"] === playerIdsAndPuddings[0]["numberOfPudding"])
+        if (doesEveryoneHaveSameScore) return
+
+        const mostPuddings = playerIdsAndPuddings[0]["numberOfPudding"]
+        if (mostPuddings === 0) return
+        const playerIdsWithMostPuddings = playerIdsAndPuddings.filter(entry => mostPuddings === entry["numberOfPudding"])
+
+        const maxScore = 6
+        const splitMaxScore = Math.floor(maxScore / playerIdsWithMostPuddings.length)
+        playerIdsWithMostPuddings.forEach(entry => {
+            const playerId = entry["playerId"]
+            const playerScore = this.playerIdToScore[playerId]
+            playerScore["score"] += splitMaxScore
+        })
+
+        if (this.players.length === 2) return
+
+        const leastPuddings = playerIdsAndPuddings[playerIdsAndPuddings.length - 1]["numberOfPudding"]
+        const playerIdsWithLeastPuddings = playerIdsAndPuddings.filter(entry => leastPuddings === entry["numberOfPudding"])
+
+        const minScore = -6
+        const splitMinScore = Math.floor(minScore / playerIdsWithLeastPuddings.length)
+        playerIdsWithLeastPuddings.forEach(entry => {
+            const playerId = entry["playerId"]
+            const playerScore = this.playerIdToScore[playerId]
+            playerScore["score"] += splitMinScore
+        })
+
+        // TODO: `numberOfPudding` is not reset if one of the above returns are evaluated
+        Object.keys(this.playerIdToScore).forEach(playerId => {
+            const playerScore = this.playerIdToScore[playerId]
+            playerScore["numberOfPudding"] = 0
         })
     }
 
@@ -132,5 +181,6 @@ class Score {
     }
 
     calculateGameScore() {
+        this.calculatePuddingScore()
     }
 }
