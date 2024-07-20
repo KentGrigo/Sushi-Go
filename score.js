@@ -84,12 +84,6 @@ class Score {
             const playerScore = this.playerIdToScore[playerId]
             playerScore["score"] += splitSecondMaxScore
         })
-
-        // TODO: `numberOfMakiRolls` is not reset if one of the above returns are evaluated
-        Object.keys(this.playerIdToScore).forEach(playerId => {
-            const playerScore = this.playerIdToScore[playerId]
-            playerScore["numberOfMakiRolls"] = 0
-        })
     }
 
     calculatePuddingScore() {
@@ -133,12 +127,6 @@ class Score {
             const playerScore = this.playerIdToScore[playerId]
             playerScore["score"] += splitMinScore
         })
-
-        // TODO: `numberOfPudding` is not reset if one of the above returns are evaluated
-        Object.keys(this.playerIdToScore).forEach(playerId => {
-            const playerScore = this.playerIdToScore[playerId]
-            playerScore["numberOfPudding"] = 0
-        })
     }
 
     calculateRoundScore() {
@@ -176,11 +164,17 @@ class Score {
         })
 
         this.calculateMakiRollScore()
-
-        return this.playerIdToScore
+        this.players.forEach(player => {
+            const playerScore = this.playerIdToScore[player.id]
+            playerScore["numberOfMakiRolls"] = 0
+        })
     }
 
     calculateGameScore() {
         this.calculatePuddingScore()
+        this.players.forEach(player => {
+            const playerScore = this.playerIdToScore[player.id]
+            playerScore["numberOfPudding"] = 0
+        })
     }
 }
