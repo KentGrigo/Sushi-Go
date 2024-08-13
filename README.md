@@ -6,7 +6,7 @@ This repository contains an implementation of the card game Sushi Go!
 
 ## How to run?
 The game is made in pure HTML and Javascript so just open `index.html` in a browser, and you're good to go.
-
+Or you visit the deployed version: https://kentgrigo.github.io/Sushi-Go/
 
 ## Status
 The implementation is still work-in-progress so only the game mechanics and scoring function have been implemented.
